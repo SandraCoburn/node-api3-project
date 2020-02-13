@@ -19,9 +19,10 @@ router.post("/", validateUser, (req, res) => {
   // do your magic!
 });
 
-router.post("/:id/posts", validatePost, (req, res) => {
+router.post("/:id/posts", (req, res) => {
   const { id } = req.params;
-  const newPost = { ...req.body, id: id };
+  const newPost = { ...req.body, user_id: id };
+  console.log(newPost);
   Posts.insert(newPost)
     .then(post => {
       res.status(210).json(post);
@@ -53,7 +54,8 @@ router.get("/:id", validateUserId, (req, res) => {
 });
 
 router.get("/:id/posts", (req, res) => {
-  Users.getUserPosts(res.params.id)
+  Users.getUserPosts(req.params.id)
+
     .then(posts => {
       res.status(200).json(posts);
     })
@@ -98,21 +100,24 @@ router.put("/:id", (req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
-  // Users.getById(req.params.id)
   const userId = req.params.id;
-  if (userId) {
-    next();
-  } else {
-    res.status(400).json({ message: "invalid user id" });
-  }
+  Users.getById(userId).then(user => {
+    if (user) {
+      next();
+    } else {
+      res.status(400).json({ message: "invalid user id" });
+    }
+  });
+
   // do your magic!
 }
 
 function validateUser(req, res, next) {
-  const user = req.body;
-  if (!user) {
+  const user = Object.keys(req.body);
+  console.log(Object.keys(user));
+  if (user.length === 0) {
     res.status(400).json({ message: "missing user data" });
-  } else if (!user.name) {
+  } else if (!user.includes("name")) {
     res.status(400).json({ message: "missing required text field" });
   } else {
     next();
@@ -121,10 +126,10 @@ function validateUser(req, res, next) {
 }
 
 function validatePost(req, res, next) {
-  const post = req.body;
-  if (!post) {
+  const post = Object.keys(req.body);
+  if (post.length === 0) {
     res.status(400).json({ message: "missing post data" });
-  } else if (!post.text) {
+  } else if (!post.includes("text")) {
     res.status(400).json({ message: "missing required text field" });
   } else {
     next();

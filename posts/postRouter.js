@@ -6,6 +6,7 @@ const router = express.Router();
 router.use(express.json());
 
 //Read, get all posts
+
 router.get("/", (req, res) => {
   Posts.get(req.query)
     .then(posts => {
