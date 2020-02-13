@@ -3,6 +3,7 @@ const express = require("express");
 const Posts = require("./postDb.js");
 
 const router = express.Router();
+router.use(express.json());
 
 //Read, get all posts
 router.get("/", (req, res) => {

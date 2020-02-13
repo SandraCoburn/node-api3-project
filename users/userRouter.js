@@ -3,6 +3,8 @@ const Users = require("./userDb.js");
 const router = express.Router();
 const Posts = require("../posts/postDb");
 
+router.use(express.json());
+
 router.post("/", validateUser, (req, res) => {
   const newUser = req.body;
   console.log(newUser);
@@ -96,7 +98,8 @@ router.put("/:id", (req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
-  const userId = req.parms.id;
+  // Users.getById(req.params.id)
+  const userId = req.params.id;
   if (userId) {
     next();
   } else {
@@ -111,6 +114,8 @@ function validateUser(req, res, next) {
     res.status(400).json({ message: "missing user data" });
   } else if (!user.name) {
     res.status(400).json({ message: "missing required text field" });
+  } else {
+    next();
   }
   // do your magic!
 }
@@ -121,6 +126,8 @@ function validatePost(req, res, next) {
     res.status(400).json({ message: "missing post data" });
   } else if (!post.text) {
     res.status(400).json({ message: "missing required text field" });
+  } else {
+    next();
   }
   // do your magic!
 }
