@@ -19,7 +19,7 @@ router.post("/", validateUser, (req, res) => {
   // do your magic!
 });
 
-router.post("/:id/posts", (req, res) => {
+router.post("/:id/posts", validatePost, (req, res) => {
   const { id } = req.params;
   const newPost = { ...req.body, user_id: id };
   console.log(newPost);
