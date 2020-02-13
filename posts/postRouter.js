@@ -18,14 +18,10 @@ router.get("/", (req, res) => {
 });
 
 //Get posts by Id
-router.get("/:id", (req, res) => {
+router.get("/:id", validatePostId, (req, res) => {
   Posts.getById(req.params.id)
     .then(post => {
-      if (post) {
-        res.status(200).json(post);
-      } else {
-        res.status(400).json({ message: "Post with that ID does not exist" });
-      }
+      res.status(200).json(post);
     })
     .catch(err => {
       console.log(err);
@@ -80,6 +76,13 @@ router.put("/:id", (req, res) => {
 // custom middleware
 
 function validatePostId(req, res, next) {
+  const postId = req.params.id;
+  if (!postId) {
+    res.status(400).json({ message: "Invalid post Id" });
+  } else {
+    next();
+  }
+
   // do your magic!
 }
 

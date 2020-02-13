@@ -9,6 +9,8 @@ const userRouter = require("./users/userRouter");
 server.use("/api/posts", postRouter);
 server.use("/api/users", userRouter);
 
+//Global middleware
+server.use(express.json());
 server.use(logger);
 
 server.get("/", (req, res, next) => {
